@@ -16,8 +16,8 @@ function App() {
   useEffect(() => {
     Rune.initClient({
       onChange: ({ game, action, yourPlayerId }) => {
-        setGame(game)
         setYourPlayerId(yourPlayerId)
+        setGame(game)
         const player = game.players.find(player => player.id === yourPlayerId)
         setCurrentPlayer(player);
 
@@ -34,12 +34,12 @@ function App() {
 
 
   return (
-    <main className="grid grid-rows-[1fr_5fr_3fr] h-full relative gap-1 p-4">
+    <main className="grid grid-rows-[1fr_5fr_3fr] h-full relative gap-1">
       <div className="bg-green-200/20">
         time left section
       </div>
 
-      <Table />
+      <Table players={game.players} cardHistory={game.cardsHistory} playerId={currentPlayer?.id} turn={game.activePlayerId} />
 
       {currentPlayer &&
         <Player isPlayersTurn={game.activePlayerId === yourPlayerId} cards={currentPlayer.cards} />

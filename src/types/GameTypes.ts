@@ -16,6 +16,15 @@ export interface PlayerType {
     cards: card[], // will be reduced when taking action 
     isAlive: boolean
 }
+// for table
+export type playerTableInfo = {
+    name: string,
+    cardCount: number
+    image: string,
+    isAlive: boolean,
+    isEmpty: boolean,
+    isTurn: boolean
+}
 
 
 // the game logic
@@ -23,6 +32,8 @@ export interface GameState {
     players: PlayerType[] // up to 4
     deckCards: deck
     activePlayerId: string // used as indicator for when player took action
+    cardsHistory: card[]
+    // roundTimeLeft: number // later implement round timer
 }
 
 // game actions - functions that need to be used in server side

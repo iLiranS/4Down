@@ -45,7 +45,8 @@ Rune.initLogic({
     return {
       players: initializePlayers(allPlayerIds, startingDeck),
       deckCards: startingDeck, // will be overriten with new one every round
-      activePlayerId: allPlayerIds[Math.floor(Math.random() * allPlayerIds.length)]
+      activePlayerId: allPlayerIds[Math.floor(Math.random() * allPlayerIds.length)],
+      cardsHistory: [new card(10, 'club'), new card(12, 'spade'), new card(8, 'diamond')]
     }
   },
   actions: {
@@ -54,3 +55,4 @@ Rune.initLogic({
     },
   },
 })
+

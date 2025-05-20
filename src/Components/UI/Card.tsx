@@ -2,6 +2,7 @@ import React from 'react';
 import { card } from '../../utils/cards';
 import { cardType } from '../../types/GameTypes';
 import { LuDiamond, LuHeart, LuClub, LuSpade } from "react-icons/lu";
+import { twMerge } from 'tailwind-merge';
 
 
 interface CardProps {
@@ -46,13 +47,13 @@ const Card: React.FC<CardProps> = ({ card, isSelected, onClick, className = '' }
     return (
         <div
             onClick={onClick}
-            className={`
+            className={twMerge(`
         relative w-full aspect-[2/3] bg-amber-50 rounded-lg p-0.5
         grid grid-rows-[1fr_1fr]
         outline-2 outline-black transition-all cursor-pointer
-        ${isSelected ? 'ring-3 ring-yellow-400 -translate-y-2' : ''}
+        ${isSelected ? 'ring-4 ring-blue-500 -translate-y-2' : ''}
         ${className}
-      `}
+      `)}
         >
             {/* Top number and suit */}
             <div style={{ color: getColorFromSymbol(card.color) }} className={`text-xl leading-5 font-bold`}>

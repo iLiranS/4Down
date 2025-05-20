@@ -13,3 +13,17 @@ html {
 main {
   height: 100dvh;
 }
+
+.tableGrid {
+  display: grid;
+  grid-template-areas:
+    "top top top"
+    "left t right";
+  grid-template-columns: 2fr 1fr 2fr;
+  grid-template-rows: 3fr 5fr;
+}
+
+
+
+
+/* then grid-area:0 for example*/
