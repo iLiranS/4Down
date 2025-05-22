@@ -19,11 +19,12 @@ const Table: React.FC<{ players: PlayerType[], cardHistory: card[], playerId: st
                 cardCount: player.cards.length,
                 isAlive: player.isAlive,
                 isEmpty: false,
-                isTurn: turn === player.id
+                isTurn: turn === player.id,
+                down_count: player.down_count
             });
         });
 
-        // Pad to always have 4 players
+        // Pad to always have 4 players - might change this later , but for cosmetic reasons I need 3 players around the circle
         while (playersInfo.length < 4) {
             playersInfo.push({
                 name: 'Empty',
@@ -31,7 +32,8 @@ const Table: React.FC<{ players: PlayerType[], cardHistory: card[], playerId: st
                 cardCount: 0,
                 isAlive: false,
                 isEmpty: true,
-                isTurn: false
+                isTurn: false,
+                down_count: 0
             });
         }
 
@@ -68,7 +70,7 @@ const Table: React.FC<{ players: PlayerType[], cardHistory: card[], playerId: st
         <ol className='tableGrid h-full w-full gap-2'>
             {playersMapped}
             <li style={{ gridArea: 't' }} className='grid place-items-center relative'>
-                <Card className='z-10' card={cardHistory[0]} />
+                <Card key={cardHistory[0].toString() + '-' + cardHistory.length} className='z-10 animate-[scaleIn_0.3s_ease-in-out]' card={cardHistory[0]} />
                 {cardHistory.length > 1 && <Card className='absolute z-[1] left-4 -translate-y-4 opacity-30 scale-90' card={cardHistory[1]} />}
 
             </li>

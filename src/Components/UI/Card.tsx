@@ -16,7 +16,7 @@ const Card: React.FC<CardProps> = ({ card, isSelected, onClick, className = '' }
     let cardText: string = card.number.toString()
 
     switch (card.number) {
-        case 1:
+        case 14:
             cardText = 'A'
             break
         case 11:

@@ -4,6 +4,8 @@ import selectSoundAudio from "./assets/select.wav"
 import Table from "./Components/Table/Table.tsx"
 import Player from "./Components/PlayerDeck/Player.tsx"
 import { GameState, PlayerType } from "./types/GameTypes.ts"
+import TopContainer from "./Components/Timer/TopContainer.tsx"
+import { card } from "./utils/cards.ts"
 
 const selectSound = new Audio(selectSoundAudio)
 
@@ -21,7 +23,7 @@ function App() {
         const player = game.players.find(player => player.id === yourPlayerId)
         setCurrentPlayer(player);
 
-        if (action && action.name === "claimCell") selectSound.play()
+        if (action && action.name === 'placeCard') selectSound.play()
       },
     })
   }, [])
@@ -31,18 +33,22 @@ function App() {
     return
   }
 
+  // can be either real or fake, check on server
+  const placeCardHandler = (card: card, fakeCard?: card) => {
+    if (fakeCard) Rune.actions.placeCard({ card, fakeCard })
+    else Rune.actions.placeCard({ card })
+  }
+
 
 
   return (
     <main className="grid grid-rows-[1fr_5fr_3fr] h-full relative gap-1">
-      <div className="bg-green-200/20">
-        time left section
-      </div>
+      <TopContainer />
 
       <Table players={game.players} cardHistory={game.cardsHistory} playerId={currentPlayer?.id} turn={game.activePlayerId} />
 
       {currentPlayer &&
-        <Player isPlayersTurn={game.activePlayerId === yourPlayerId} cards={currentPlayer.cards} />
+        <Player tableCard={game.cardsHistory[0]} isFirst={game.cardsHistory.length === 1} onPlaceCard={placeCardHandler} isPlayersTurn={game.activePlayerId === yourPlayerId} cards={currentPlayer.cards} />
       }
 
     </main>

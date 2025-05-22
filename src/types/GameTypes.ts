@@ -3,8 +3,8 @@ import { card, deck } from "../utils/cards";
 
 export type downCount = 0 | 1 | 2 | 3
 
-// 1,2,3,...,14  || 14 = Joker , 13 = King , 12 = Queen , 11 = Prince
-type bluffCard = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13
+// 2,3,... , 14 = ace
+type bluffCard = 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14
 export type gameCard = bluffCard | 14;
 export type cardType = 'diamond' | 'heart' | 'spade' | 'club';
 
@@ -23,7 +23,8 @@ export type playerTableInfo = {
     image: string,
     isAlive: boolean,
     isEmpty: boolean,
-    isTurn: boolean
+    isTurn: boolean,
+    down_count: downCount
 }
 
 

@@ -3,11 +3,15 @@ import { cardType, gameCard } from "../types/GameTypes";
 export class card {
     number: gameCard;
     color: cardType;
+    fake_val?: gameCard;
 
 
-    constructor(number: gameCard, color: cardType) {
+    constructor(number: gameCard, color: cardType, fake_val?: gameCard) {
         this.number = number;
         this.color = color;
+        if (fake_val) {
+            this.fake_val = fake_val
+        }
     }
 
 
@@ -22,7 +26,7 @@ export class deck {
     constructor() {
         this.cards = [];
         const colors: cardType[] = ['diamond', 'heart', 'spade', 'club'];
-        const numbers: gameCard[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+        const numbers: gameCard[] = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
 
         for (const color of colors) {
             for (const number of numbers) {
@@ -39,6 +43,18 @@ export class deck {
         if (this.cards.length === 0) return undefined;
         const idx = Math.floor(Math.random() * this.cards.length);
         return this.cards.splice(idx, 1)[0];
+    }
+    /**
+     * 
+     * @returns  first card on table - above J seems not fair and less fun.
+     */
+    firstCardOnTable(): card | undefined {
+        let tmpCard = this.pull()
+        while (tmpCard && tmpCard.number > 11) {
+            tmpCard = this.pull()
+        }
+
+        return tmpCard
     }
 
     /**

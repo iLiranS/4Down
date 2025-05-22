@@ -23,6 +23,16 @@ main {
   grid-template-rows: 3fr 5fr;
 }
 
+@keyframes scaleIn {
+  0% {
+    scale: 1.15;
+  }
+
+  100% {
+    scale: 1;
+  }
+}
+
 
 
 
