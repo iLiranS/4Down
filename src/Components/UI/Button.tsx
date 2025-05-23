@@ -10,7 +10,7 @@ const Button: React.FC<ButtonProps> = ({ className = '', children, ...props }) =
 
     return (
         <button
-            className={twMerge('p-2 hover:scale-105 disabled:hover:scale-100 transition-transform rounded-md bg-white/10 hover:cursor-pointer disabled:opacity-25 disabled:cursor-not-allowed ', className)}
+            className={twMerge('p-2  transition-transform rounded-md bg-white/10 hover:cursor-pointer disabled:opacity-25 disabled:cursor-not-allowed ', className)}
             {...props}
         >
             {children}

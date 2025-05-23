@@ -4,25 +4,30 @@ import { FaRegCircleXmark } from "react-icons/fa6";
 import { card } from '../../utils/cards';
 interface PopupProps {
     children: React.ReactNode;
-    onClose: () => void;
+    onClose?: () => void;
     closable?: boolean;
     title: string
 }
 
 const Popup: React.FC<PopupProps> = ({ children, onClose, closable = true, title }) => {
 
+    const onCloseHandler = () => {
+        if (!closable) return
+        if (onClose) onClose();
+    }
+
 
 
     const el = createPortal(
         <div className={`absolute top-0 left-0 h-screen w-screen grid place-items-center`}>
-            <div onClick={onClose} className='bg-black/60 z-40 w-full h-full absolute top-0 left-0'>
+            <div onClick={onCloseHandler} className='bg-black/60 z-40 w-full h-full absolute top-0 left-0'>
 
             </div>
-            <div className="bg-gray-700 w-10/12 h-10/12 p-3 rounded-lg z-50 flex flex-col gap-2">
+            <div className="bg-gray-700 w-10/12 h-10/12 p-3 rounded-lg z-50 flex flex-col gap-2 relative overflow-y-auto">
                 <section className='flex items-center justify-between'>
                     <p></p>
                     <p>{title}</p>
-                    <div onClick={onClose} className='cursor-pointer text-xl'><FaRegCircleXmark /></div>
+                    <div onClick={onCloseHandler} className='cursor-pointer text-xl'>{closable && <FaRegCircleXmark />}</div>
 
                 </section>
                 {children}

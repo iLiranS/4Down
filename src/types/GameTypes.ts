@@ -24,7 +24,16 @@ export type playerTableInfo = {
     isAlive: boolean,
     isEmpty: boolean,
     isTurn: boolean,
-    down_count: downCount
+    down_count: downCount,
+    id: string
+}
+
+export type loseAnimation = {
+    active: boolean,
+    rotateValue: number,
+    successRate: number,
+    playerId: string,
+    readyCount: number
 }
 
 
@@ -33,7 +42,9 @@ export interface GameState {
     players: PlayerType[] // up to 4
     deckCards: deck
     activePlayerId: string // used as indicator for when player took action
+    lastTurnPlayerId: string | undefined
     cardsHistory: card[]
+    loseAnimation?: loseAnimation
     // roundTimeLeft: number // later implement round timer
 }
 

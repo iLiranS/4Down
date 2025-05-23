@@ -10,9 +10,15 @@ html {
     Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
+
 main {
   height: 100dvh;
+  background-image: url('./assets/table_bg.png');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
 }
+
+
 
 .tableGrid {
   display: grid;
@@ -21,7 +27,29 @@ main {
     "left t right";
   grid-template-columns: 2fr 1fr 2fr;
   grid-template-rows: 3fr 5fr;
+
 }
+
+.roulette-container {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin: 2rem auto;
+}
+
+.pointer {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 24px;
+  color: #fca311;
+  z-index: 2;
+}
+
+
+
+
 
 @keyframes scaleIn {
   0% {
@@ -33,7 +61,29 @@ main {
   }
 }
 
+@keyframes transformIn {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0.4;
+  }
 
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes translateFromBottom {
+  from {
+    transform: translateY(100%);
+    opacity: 0.4;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
 
 
 /* then grid-area:0 for example*/

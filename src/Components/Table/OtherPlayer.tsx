@@ -3,7 +3,7 @@ import { playerTableInfo } from '../../types/GameTypes'
 import CardCover, { cardPosition } from '../UI/CardCover'
 import { buildStyles, CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-
+import { FaSortDown } from "react-icons/fa";
 const OtherPlayer: React.FC<{ orderIndex: number, playerTableInfo: playerTableInfo }> = ({ orderIndex, playerTableInfo }) => {
     // Add safety check at the beginning
     if (!playerTableInfo) {
@@ -73,7 +73,8 @@ const OtherPlayer: React.FC<{ orderIndex: number, playerTableInfo: playerTableIn
                         maxValue={4}
                     />
 
-                    <img className={`rounded-full absolute scale-90 aspect-square ${orderIndex === 1 ? 'h-full' : 'w-full'} ${playerTableInfo.isTurn && 'ring-yellow-400 ring-2'}`} src={playerTableInfo.image} alt={playerTableInfo.name} />
+                    <img className={`rounded-full absolute scale-90 aspect-square ${orderIndex === 1 ? 'h-full' : 'w-full'}`} src={playerTableInfo.image} alt={playerTableInfo.name} />
+                    {playerTableInfo.isTurn && <div className='absolute -top-4 left-1/2 -translate-x-1/2 grid place-items-center animate-bounce'><FaSortDown /></div>}
                 </div>
                 <div className='relative flex-auto'>
                     {cardsMapped}

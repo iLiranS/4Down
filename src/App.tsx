@@ -6,6 +6,7 @@ import Player from "./Components/PlayerDeck/Player.tsx"
 import { GameState, PlayerType } from "./types/GameTypes.ts"
 import TopContainer from "./Components/Timer/TopContainer.tsx"
 import { card } from "./utils/cards.ts"
+import { generateRandoLostText } from "./utils/LogicFunctions.ts"
 
 const selectSound = new Audio(selectSoundAudio)
 
@@ -13,6 +14,9 @@ function App() {
   const [game, setGame] = useState<GameState>()
   const [yourPlayerId, setYourPlayerId] = useState<string | undefined>()
   const [currentPlayer, setCurrentPlayer] = useState<PlayerType | undefined>();
+  const [loseText, setLoseText] = useState(generateRandoLostText())
+
+
   // set currentPlayer -> be Player[] and is set to game.players[?] so that players[?].id == yourPlayerId
 
   useEffect(() => {
@@ -35,20 +39,49 @@ function App() {
 
   // can be either real or fake, check on server
   const placeCardHandler = (card: card, fakeCard?: card) => {
+    // check if previous card was Ace and fake - means current lost
+    const lastCard = game.cardsHistory[0];
+    if (lastCard.number === 14 && lastCard.fake_val) {
+      // lost due to last ace was fake.
+      Rune.actions.lostRound(game.activePlayerId)
+      return
+    }
     if (fakeCard) Rune.actions.placeCard({ card, fakeCard })
     else Rune.actions.placeCard({ card })
+  }
+
+  const callLieHandler = () => {
+    if (game.cardsHistory[0].fake_val) {
+      // means it was indeed lie and prev player has lost
+      const lastTurnPlayerId = game.lastTurnPlayerId
+      if (!lastTurnPlayerId) return
+      Rune.actions.lostRound(lastTurnPlayerId)
+    }
+    else {
+      // the last card was not a lie and current lost
+      Rune.actions.lostRound(game.activePlayerId)
+    }
   }
 
 
 
   return (
-    <main className="grid grid-rows-[1fr_5fr_3fr] h-full relative gap-1">
-      <TopContainer />
+    <main className="grid grid-rows-[1fr_5fr_3fr] h-full relative gap-1 overflow-hidden">
+      <TopContainer loseAnimation={game.loseAnimation} currentPlayerId={yourPlayerId ?? ''} />
 
       <Table players={game.players} cardHistory={game.cardsHistory} playerId={currentPlayer?.id} turn={game.activePlayerId} />
 
-      {currentPlayer &&
-        <Player tableCard={game.cardsHistory[0]} isFirst={game.cardsHistory.length === 1} onPlaceCard={placeCardHandler} isPlayersTurn={game.activePlayerId === yourPlayerId} cards={currentPlayer.cards} />
+      {currentPlayer && !game.loseAnimation?.active &&
+
+        <>
+          {currentPlayer.isAlive ?
+            <Player onCall={callLieHandler} tableCard={game.cardsHistory[0]} isFirst={game.cardsHistory.length === 1} onPlaceCard={placeCardHandler} isPlayersTurn={game.activePlayerId === yourPlayerId} cards={currentPlayer.cards} />
+            :
+            <p className="text-xl font-serif self-end text-center pb-4">{loseText}</p>
+
+          }
+        </>
+
       }
 
     </main>

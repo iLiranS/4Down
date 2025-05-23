@@ -3,15 +3,18 @@ import { playerTableInfo, PlayerType } from '../../types/GameTypes'
 import { card } from '../../utils/cards';
 import OtherPlayer from './OtherPlayer';
 import Card from '../UI/Card';
+import useGameStore from '../../utils/useStore';
 
 // main table - will include the deck card, players, last 5 cards list.
 const Table: React.FC<{ players: PlayerType[], cardHistory: card[], playerId: string | undefined, turn: string }> = ({ players, cardHistory, playerId, turn }) => {
     const [playersTableInfo, setPlayersTableInfo] = useState<playerTableInfo[]>([]);
     const [playerIndex, setPlayerIndex] = useState(playerId ? players.map(player => player.id).indexOf(playerId) : -1)
+    const updateUsers = useGameStore((state) => state.initialize)
+
 
     // initialization of players information - runs once on setup 
     useEffect(() => {
-        const playersInfo: playerTableInfo[] = players.map((player) => {
+        const playersInfo: playerTableInfo[] = players.filter(player => player.isAlive).map((player) => {
             const playerInfo = Rune.getPlayerInfo(player.id);
             return ({
                 name: playerInfo.displayName,
@@ -20,7 +23,8 @@ const Table: React.FC<{ players: PlayerType[], cardHistory: card[], playerId: st
                 isAlive: player.isAlive,
                 isEmpty: false,
                 isTurn: turn === player.id,
-                down_count: player.down_count
+                down_count: player.down_count,
+                id: player.id
             });
         });
 
@@ -33,12 +37,19 @@ const Table: React.FC<{ players: PlayerType[], cardHistory: card[], playerId: st
                 isAlive: false,
                 isEmpty: true,
                 isTurn: false,
-                down_count: 0
+                down_count: 0,
+                id: ''
             });
         }
 
         setPlayersTableInfo(playersInfo);
     }, [players]);
+
+    //  update store - I need it in other components and I fetch rune info here so...
+    useEffect(() => {
+        if (playersTableInfo.length < 1) return
+        updateUsers(playersTableInfo)
+    }, [playersTableInfo])
 
     const playersMapped = useMemo(() => {
         // Don't render anything if we don't have valid player info
