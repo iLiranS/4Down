@@ -56,6 +56,7 @@ const Table: React.FC<{ players: PlayerType[], cardHistory: card[], playerId: st
         if (playerIndex === -1 || !playersTableInfo.length) return <></>;
 
         const gridPositions = ['left', 'top', 'right'];
+        const isAlive = playersTableInfo.find(player => player.id === playerId)?.isAlive
 
         const otherPlayers = [1, 2, 3].map(offset => {
             const index = (playerIndex + offset) % playersTableInfo.length;
@@ -67,6 +68,12 @@ const Table: React.FC<{ players: PlayerType[], cardHistory: card[], playerId: st
                 isEmpty: true
             };
         });
+        if (playersTableInfo.filter(player => player.isAlive).length === 2 && isAlive) {
+            const otherPlayer = playersTableInfo.filter(player => player.isAlive).filter(player => player.id !== playerId)
+            return <li style={{ gridArea: 'top' }}>
+                <OtherPlayer orderIndex={1} playerTableInfo={otherPlayer[0]} />
+            </li>
+        }
 
         return otherPlayers.map((player, idx) => (
             <li key={idx}

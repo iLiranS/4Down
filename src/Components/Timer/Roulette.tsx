@@ -2,10 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { loseAnimation, playerTableInfo } from '../../types/GameTypes';
 import 'react-circular-progressbar/dist/styles.css';
 import { buildStyles, CircularProgressbar } from 'react-circular-progressbar';
+import sound_effect from '../../assets/fail.wav'
 
 
 const Roulette: React.FC<{ loseAnimation: loseAnimation, onFinishAnimation: () => void, player: playerTableInfo }> = ({ loseAnimation, onFinishAnimation, player }) => {
     const { rotateValue, successRate } = loseAnimation;
+    const sound = new Audio(sound_effect)
+    sound.volume = 0.5
     const [degree, setDegree] = useState(0);
     const [result, setResult] = useState<string>('Spinning...');
     const [isSpinning, setIsSpinning] = useState(true);
@@ -19,6 +22,7 @@ const Roulette: React.FC<{ loseAnimation: loseAnimation, onFinishAnimation: () =
 
     const isSuccess = rotateValue <= successRate;
 
+
     useEffect(() => {
         // Animate spin
         setDegree(0);
@@ -27,14 +31,17 @@ const Roulette: React.FC<{ loseAnimation: loseAnimation, onFinishAnimation: () =
             setTimeout(() => {
                 setIsSpinning(false);
                 setResult(isSuccess ? 'Safe 👾' : "Lost 🪦");
+                if (!isSuccess) sound.play()
                 onFinishAnimation()
             }, 3000); // match transition duration
         }, 100); // slight delay to trigger transition
         return () => clearTimeout(timeout);
     }, [finalDegree, isSuccess]);
 
+    if (!player) return <></>
+
     return (
-        <div className="w-full pt-8 relative overflow-hidden">
+        <div className="w-full h-full pt-8 relative overflow-hidden">
             <div className="absolute left-1/2 top-2 -translate-x-1/2 z-10">▼</div>
             <div
                 style={{
@@ -56,10 +63,13 @@ const Roulette: React.FC<{ loseAnimation: loseAnimation, onFinishAnimation: () =
                     counterClockwise
                 />
             </div>
-            {result !== 'Spinning...' && <div className='text-3xl flex items-center gap-2 justify-center h-14 uppercase text-center pt-4 animate-[translateFromBottom_1s_ease_1]'>
-                <img src={player.image} alt={player.name} className='h-full aspect-square rounded-full' />
-                <p>{result}</p>
-            </div>}
+            <div className=' flex items-center justify-center uppercase text-center pt-4 '>
+                <img src={player.image} alt={player.name} className='h-10 aspect-square rounded-full' />
+            </div>
+            <div className='flex w-full justify-center'>
+                {result !== 'Spinning...' ? <p className='animate-[translateFromBottom_1s_ease_1] w-full text-center'>{result}</p> : <p className='animate-pulse w-full text-center'>...</p>}
+            </div>
+            <p className='absolute bottom-2 left-0 text-center w-full font-serif'>{loseAnimation.msg}</p>
         </div>
     );
 };

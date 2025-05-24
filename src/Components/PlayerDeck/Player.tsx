@@ -2,22 +2,23 @@ import React, { useEffect, useMemo, useState } from 'react';
 import Button from '../UI/Button';
 import Card from '../UI/Card';
 import { GiMagicHat, GiCardDiscard } from "react-icons/gi";
-import { PiDetective } from "react-icons/pi";
-import { card } from '../../utils/cards';
+import { MdOutlineHowToVote } from "react-icons/md"; import { card } from '../../utils/cards';
 import Popup from '../UI/Popup';
 import { cardType, gameCard } from '../../types/GameTypes';
 import { cardNumberToString } from '../../utils/LogicFunctions';
 
-const numbers: gameCard[] = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+const numbers: gameCard[] = [10, 11, 12, 13, 14];
 const types: cardType[] = ['diamond', 'heart', 'spade', 'club'];
 
-const Player: React.FC<{ cards: card[], isPlayersTurn: boolean, onPlaceCard: (card: card, fakeCard?: card) => void, tableCard: card, isFirst: boolean, onCall: () => void }>
-    = ({ cards, isPlayersTurn, onPlaceCard, tableCard, isFirst, onCall }) => {
+const Player: React.FC<{ cards: card[], totalPlayers: number, isPlayersTurn: boolean, onPlaceCard: (card: card, fakeCard?: card) => void, tableCards: card[], isFirst: boolean, onCall: () => void }>
+    = ({ cards, isPlayersTurn, onPlaceCard, tableCards, isFirst, onCall, totalPlayers }) => {
         const [selectedCard, setSelectedCard] = useState<card | undefined>(undefined);
         const [bluffPopup, setBluffPopup] = useState(false);
         const [canPlay, setCanPlay] = useState(true)
+        const tableCard = tableCards[0]
+        const hasToCall = (tableCards.length === totalPlayers * 4)
 
-        const [bluffedCard, setBluffedCard] = useState<card>(new card(2, 'club'))
+        const [bluffedCard, setBluffedCard] = useState<card>(new card(10, 'club'))
         let isSelectedLegit = selectedCard ? selectedCard.number > tableCard.number : true // if card not selected - it's legit.
         if (tableCard.number === 14) isSelectedLegit = true
 
@@ -35,17 +36,14 @@ const Player: React.FC<{ cards: card[], isPlayersTurn: boolean, onPlaceCard: (ca
             else setSelectedCard(cards[index]);
         };
 
-        // will be aclled either from 'place' (if was legit) or from bluff (if wasn't legit)
-        const placeCardHandler = (card: card) => {
-            if (!isPlayersTurn) return;
-            onPlaceCard(card);
-            setCanPlay(false)
-            setSelectedCard(undefined)
-        }
+
+
 
         const placeLegitCardHandler = () => {
-            if (!selectedCard) return;
-            placeCardHandler(selectedCard);
+            if (!selectedCard || !isPlayersTurn) return;
+            onPlaceCard(selectedCard);
+            setCanPlay(false)
+            setSelectedCard(undefined)
         }
 
         const bluffCardHandler = () => {
@@ -55,7 +53,8 @@ const Player: React.FC<{ cards: card[], isPlayersTurn: boolean, onPlaceCard: (ca
             if (!selectedCard) return
             const final_bluff_card: card = new card(bluffedCard.number, bluffedCard.color, bluffedCard.number);
             setBluffPopup(false);
-
+            console.log("real card was : " + selectedCard.toString())
+            console.log("fake card was : " + final_bluff_card.toString())
             onPlaceCard(selectedCard, final_bluff_card)
             setSelectedCard(undefined)
             setCanPlay(false)
@@ -69,21 +68,24 @@ const Player: React.FC<{ cards: card[], isPlayersTurn: boolean, onPlaceCard: (ca
 
 
         return (
-            <div className='flex flex-col relative backdrop-blur-md'>
+            <div className='flex flex-col relative backdrop-blur-md '>
 
                 {/* actions */}
+
                 <ol className='grid grid-cols-[1fr_1fr]'>
                     <li className='flex justify-center'>
-                        <Button onClick={callLastPlayer} disabled={!isPlayersTurn || isFirst || !canPlay} className='flex uppercase text-blue-200 text-xl justify-center items-center gap-2 bg-blue-400/40 ring-2'> Call <PiDetective color='#98d2eb' /> </Button>
+                        <Button onClick={callLastPlayer} disabled={!isPlayersTurn || isFirst || !canPlay} className='flex uppercase text-blue-200 text-xl justify-center items-center gap-2 bg-blue-400/40 ring-2'> Call <MdOutlineHowToVote color='#98d2eb' /> </Button>
 
                     </li>
-                    <li className='flex justify-center'>
-                        {isSelectedLegit ?
-                            <Button onClick={placeLegitCardHandler} disabled={!isPlayersTurn || !selectedCard || !canPlay} className='flex text-amber-50 uppercase text-xl justify-center items-center gap-2 bg-cyan-400/30 ring-2'> Place <GiCardDiscard color='bg-cyan-400' /> </Button>
-                            :
-                            <Button onClick={bluffCardHandler} disabled={!isPlayersTurn || !selectedCard || !canPlay} className='flex text-orange-200 uppercase text-xl justify-center items-center gap-2 bg-orange-300/30 ring-2'> Bluff <GiMagicHat color='orange' /> </Button>
-                        }
-                    </li>
+                    {!hasToCall &&
+                        <li className='flex justify-center'>
+                            {isSelectedLegit ?
+                                <Button onClick={placeLegitCardHandler} disabled={!isPlayersTurn || !selectedCard || !canPlay} className='flex text-amber-50 uppercase text-xl justify-center items-center gap-2 bg-cyan-400/30 ring-2'> Place <GiCardDiscard color='bg-cyan-400' /> </Button>
+                                :
+                                <Button onClick={bluffCardHandler} disabled={!isPlayersTurn || !selectedCard || !canPlay} className='flex text-orange-200 uppercase text-xl justify-center items-center gap-2 bg-orange-300/30 ring-2'> Bluff <GiMagicHat color='orange' /> </Button>
+                            }
+                        </li>
+                    }
                 </ol>
 
                 {/* own deck */}
@@ -115,7 +117,7 @@ const Player: React.FC<{ cards: card[], isPlayersTurn: boolean, onPlaceCard: (ca
                             </div>
 
 
-                            <Button className='flex text-orange-200 uppercase text-xl justify-center items-center gap-2 bg-orange-300/30'>Confirm <GiMagicHat color='orange' /> </Button>
+                            <Button className='flex text-orange-200 uppercase text-xl justify-center  items-center gap-2 bg-black/40 ring-2 ring-orange-300'>Confirm <GiMagicHat color='orange' /> </Button>
                         </form>
                     </Popup>}
             </div>

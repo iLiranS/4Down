@@ -4,7 +4,7 @@ import { card, deck } from "../utils/cards";
 export type downCount = 0 | 1 | 2 | 3
 
 // 2,3,... , 14 = ace
-type bluffCard = 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14
+type bluffCard = 10 | 11 | 12 | 13 | 14
 export type gameCard = bluffCard | 14;
 export type cardType = 'diamond' | 'heart' | 'spade' | 'club';
 
@@ -33,7 +33,8 @@ export type loseAnimation = {
     rotateValue: number,
     successRate: number,
     playerId: string,
-    readyCount: number
+    readyCount: number,
+    msg: string
 }
 
 

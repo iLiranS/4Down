@@ -3,6 +3,7 @@ import Popup from '../UI/Popup';
 import { FaRegQuestionCircle, FaSkull } from "react-icons/fa";
 import useGameStore from '../../utils/useStore';
 import your_turn_sound from "../../assets/yourturn.mp3"
+import flip_cards from '../../assets/flip_card.wav'
 import { loseAnimation, playerTableInfo } from '../../types/GameTypes';
 import FAQ from './FAQ';
 import Roulette from './Roulette';
@@ -14,6 +15,7 @@ const TopContainer: React.FC<{ currentPlayerId: string, loseAnimation: loseAnima
     const currentPlayer = players.find(player => player.id === currentPlayerId)
     const currentTurnPlayer = players.filter(player => player.isTurn)[0]
     const selectSound = new Audio(your_turn_sound)
+    const newRoundSound = new Audio(flip_cards);
     const [caughtPlayer, setCaughtPlayer] = useState<playerTableInfo | undefined>(undefined);
 
 
@@ -56,12 +58,12 @@ const TopContainer: React.FC<{ currentPlayerId: string, loseAnimation: loseAnima
     }
 
     return (
-        <div className='flex justify-between items-center px-2'>
+        <div className={`flex justify-between items-center px-2`}>
             <section key={nameVal} className='items-center gap-2 flex animate-[transformIn.2s_ease-in-out]'>
                 {currentTurnPlayer &&
                     <img className='h-6 aspect-square rounded-full' src={currentTurnPlayer.image} alt={currentTurnPlayer.name + '_img'}></img>
                 }
-                <p className='text-sm text-yellow-400'>{nameVal} <span className='opacity-70 text-white'>turn</span></p>
+                <p className='text-sm text-yellow-400 font-semibold'>{nameVal} <span className='opacity-70 text-white'>turn</span></p>
 
             </section>
             <div className='cursor-pointer text-xl' onClick={() => { setShowFAQ(true) }}>
@@ -79,7 +81,7 @@ const TopContainer: React.FC<{ currentPlayerId: string, loseAnimation: loseAnima
                 </Popup>}
 
             {loseAnimation &&
-                <Popup closable={false} title={caughtPlayer?.name + ` has been caught 🚨`}>
+                <Popup closable={false} title={` ${caughtPlayer?.id === currentPlayer?.id ? 'You' : caughtPlayer?.name} lost the round`}>
                     <Roulette player={caughtPlayer as playerTableInfo} onFinishAnimation={finishAnimationHandler} loseAnimation={loseAnimation} />
                 </Popup>}
         </div>

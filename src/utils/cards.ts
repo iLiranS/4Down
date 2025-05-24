@@ -26,7 +26,7 @@ export class deck {
     constructor() {
         this.cards = [];
         const colors: cardType[] = ['diamond', 'heart', 'spade', 'club'];
-        const numbers: gameCard[] = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+        const numbers: gameCard[] = [10, 11, 12, 13, 14];
 
         for (const color of colors) {
             for (const number of numbers) {
@@ -50,9 +50,7 @@ export class deck {
      */
     firstCardOnTable(): card | undefined {
         let tmpCard = this.pull()
-        while (tmpCard && tmpCard.number > 11) {
-            tmpCard = this.pull()
-        }
+
 
         return tmpCard
     }

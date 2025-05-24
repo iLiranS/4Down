@@ -7,7 +7,7 @@ export type Cells = (PlayerId | null)[]
 
 type GameActions = {
   placeCard: (params: { card: card, fakeCard?: card }) => void,
-  lostRound: (playerid: string) => void
+  lostRound: (params: { userId: string, msg: string }) => void
   addReady: () => void
 }
 
@@ -39,7 +39,7 @@ const initializePlayers = (ids: PlayerId[], startingDeck: deck): PlayerType[] =>
 };
 
 Rune.initLogic({
-  minPlayers: 1,
+  minPlayers: 2,
   maxPlayers: 4,
   setup: (allPlayerIds) => {
     const startingDeck = new deck();
@@ -49,7 +49,7 @@ Rune.initLogic({
       players: initializePlayers(allPlayerIdsShuffled, startingDeck),
       deckCards: startingDeck, // will be overriten with new one every round
       activePlayerId: allPlayerIdsShuffled[Math.floor(Math.random() * allPlayerIdsShuffled.length)],
-      cardsHistory: [startingDeck.firstCardOnTable() ?? new card(7, 'club')], // 7 diamond will never happend
+      cardsHistory: [startingDeck.firstCardOnTable() ?? new card(10, 'club')], // 7 diamond will never happend
       lastTurnPlayerId: undefined
     }
   },
@@ -57,10 +57,6 @@ Rune.initLogic({
     placeCard(params, actionContext) {
       const { game } = actionContext
       const { card, fakeCard } = params
-
-      //TODO: if only 1 player left with cards - I will make it so he has to "call" so no problem here
-      //TODO: Simple AI to play against -> if he has 3 valid and 1 bluff -> 25% to bluff ... 
-      //TODO: EMOTES chat ! (if have time)
 
       // update table history with fake/real card
       const updatedHistory = [fakeCard ?? card, ...game.cardsHistory]
@@ -70,7 +66,19 @@ Rune.initLogic({
       const id_map = game.players.map(player => player.id);
       const playerIndex = id_map.indexOf(game.activePlayerId)
       const playerCards = game.players[playerIndex].cards
-      const cardIndex = playerCards.indexOf(card);
+
+      // Find the actual card that was selected (not the bluffed card)
+      const cardToRemove = card;
+      const cardIndex = playerCards.findIndex(c =>
+        c.number === cardToRemove.number &&
+        c.color === cardToRemove.color
+      );
+
+      if (cardIndex === -1) {
+        console.error("Card not found in player's hand");
+        return;
+      }
+
       game.players[playerIndex].cards = [...playerCards].toSpliced(cardIndex, 1);
 
       // new player turn - skip while hand is empty is actually not necessery because each player has to get rid of exactly 1 card each turn.
@@ -89,7 +97,8 @@ Rune.initLogic({
       game.activePlayerId = new_player_id
 
     },
-    lostRound(userId, { game }) {
+    lostRound(params, { game }) {
+      const { userId, msg } = params
       const id_map = game.players.map(player => player.id);
       const playerIndex = id_map.indexOf(userId)
       const player = game.players[playerIndex]
@@ -103,7 +112,8 @@ Rune.initLogic({
         playerId: userId,
         successRate: getSuccessRate(new_down_count),
         readyCount: 0,
-        rotateValue: Math.floor(Math.random() * 101) // random number between 0 and 100 inclusive
+        rotateValue: Math.floor(Math.random() * 101), // random number between 0 and 100 inclusive
+        msg
       }
       // new game would geenrate upon addReady meet it's requirments
 
