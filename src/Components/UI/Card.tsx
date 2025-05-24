@@ -1,18 +1,18 @@
 import React from 'react';
-import { card } from '../../utils/cards';
+import { Card } from '../../utils/cards';
 import { cardType } from '../../types/GameTypes';
 import { LuDiamond, LuHeart, LuClub, LuSpade } from "react-icons/lu";
 import { twMerge } from 'tailwind-merge';
 
 
 interface CardProps {
-    card: card;
+    card: Card;
     isSelected?: boolean;
     onClick?: () => void;
     className?: string;
 }
 
-const Card: React.FC<CardProps> = ({ card, isSelected, onClick, className = '' }) => {
+const CardComponent: React.FC<CardProps> = ({ card, isSelected, onClick, className = '' }) => {
     let cardText: string = card.number.toString()
 
     switch (card.number) {
@@ -73,4 +73,4 @@ const Card: React.FC<CardProps> = ({ card, isSelected, onClick, className = '' }
     );
 };
 
-export default Card;
+export default CardComponent;

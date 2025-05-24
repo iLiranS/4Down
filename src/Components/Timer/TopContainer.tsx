@@ -3,7 +3,6 @@ import Popup from '../UI/Popup';
 import { FaRegQuestionCircle, FaSkull } from "react-icons/fa";
 import useGameStore from '../../utils/useStore';
 import your_turn_sound from "../../assets/yourturn.mp3"
-import flip_cards from '../../assets/flip_card.wav'
 import { loseAnimation, playerTableInfo } from '../../types/GameTypes';
 import FAQ from './FAQ';
 import Roulette from './Roulette';
@@ -15,7 +14,6 @@ const TopContainer: React.FC<{ currentPlayerId: string, loseAnimation: loseAnima
     const currentPlayer = players.find(player => player.id === currentPlayerId)
     const currentTurnPlayer = players.filter(player => player.isTurn)[0]
     const selectSound = new Audio(your_turn_sound)
-    const newRoundSound = new Audio(flip_cards);
     const [caughtPlayer, setCaughtPlayer] = useState<playerTableInfo | undefined>(undefined);
 
 

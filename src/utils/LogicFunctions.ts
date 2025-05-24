@@ -1,5 +1,5 @@
 import { gameCard } from "../types/GameTypes";
-import { card, deck } from "./cards";
+import { Card, createCard, pullCard } from "./cards";
 
 export const shuffleArray = <T>(array: T[]): T[] => {
     const arr = [...array];
@@ -18,11 +18,11 @@ export const cardNumberToString = (num: gameCard) => {
     return num
 }
 
-export const givePlayerCards = (deck: deck): card[] => {
+export const givePlayerCards = (deck: Card[]): Card[] => {
     const cards = []
     for (let i = 0; i < 4; i++) {
-        const tmpCard = deck.pull();
-        cards[i] = tmpCard !== undefined ? tmpCard : new card(10, 'club'); // will never happen just typesafe.
+        const tmpCard = pullCard(deck);
+        cards[i] = tmpCard !== undefined ? tmpCard : createCard(10, 'club'); // will never happen just typesafe.
     }
     return cards;
 }

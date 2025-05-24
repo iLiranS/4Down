@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import Button from '../UI/Button';
-import Card from '../UI/Card';
+import CardComponent from '../UI/Card';
 import { GiMagicHat, GiCardDiscard } from "react-icons/gi";
-import { MdOutlineHowToVote } from "react-icons/md"; import { card } from '../../utils/cards';
+import { MdOutlineHowToVote } from "react-icons/md";
+import { Card, createCard } from '../../utils/cards';
 import Popup from '../UI/Popup';
 import { cardType, gameCard } from '../../types/GameTypes';
 import { cardNumberToString } from '../../utils/LogicFunctions';
@@ -10,15 +11,15 @@ import { cardNumberToString } from '../../utils/LogicFunctions';
 const numbers: gameCard[] = [10, 11, 12, 13, 14];
 const types: cardType[] = ['diamond', 'heart', 'spade', 'club'];
 
-const Player: React.FC<{ cards: card[], totalPlayers: number, isPlayersTurn: boolean, onPlaceCard: (card: card, fakeCard?: card) => void, tableCards: card[], isFirst: boolean, onCall: () => void }>
+const Player: React.FC<{ cards: Card[], totalPlayers: number, isPlayersTurn: boolean, onPlaceCard: (card: Card, fakeCard?: Card) => void, tableCards: Card[], isFirst: boolean, onCall: () => void }>
     = ({ cards, isPlayersTurn, onPlaceCard, tableCards, isFirst, onCall, totalPlayers }) => {
-        const [selectedCard, setSelectedCard] = useState<card | undefined>(undefined);
+        const [selectedCard, setSelectedCard] = useState<Card | undefined>(undefined);
         const [bluffPopup, setBluffPopup] = useState(false);
         const [canPlay, setCanPlay] = useState(true)
         const tableCard = tableCards[0]
         const hasToCall = (tableCards.length === totalPlayers * 4)
 
-        const [bluffedCard, setBluffedCard] = useState<card>(new card(10, 'club'))
+        const [bluffedCard, setBluffedCard] = useState<Card>(createCard(10, 'club'))
         let isSelectedLegit = selectedCard ? selectedCard.number > tableCard.number : true // if card not selected - it's legit.
         if (tableCard.number === 14) isSelectedLegit = true
 
@@ -27,7 +28,7 @@ const Player: React.FC<{ cards: card[], totalPlayers: number, isPlayersTurn: boo
         useEffect(() => {
             const num = tableCard.number === 14 ? 14 : tableCard.number + 1 as gameCard
             const type = types[Math.floor(Math.random() * 4)]
-            setBluffedCard(new card(num, type));
+            setBluffedCard(createCard(num, type));
             setCanPlay(true)
         }, [tableCard])
 
@@ -51,7 +52,7 @@ const Player: React.FC<{ cards: card[], totalPlayers: number, isPlayersTurn: boo
         }
         const submitBluffHandler = () => {
             if (!selectedCard) return
-            const final_bluff_card: card = new card(bluffedCard.number, bluffedCard.color, bluffedCard.number);
+            const final_bluff_card: Card = createCard(bluffedCard.number, bluffedCard.color, bluffedCard.number);
             setBluffPopup(false);
             console.log("real card was : " + selectedCard.toString())
             console.log("fake card was : " + final_bluff_card.toString())
@@ -92,7 +93,7 @@ const Player: React.FC<{ cards: card[], totalPlayers: number, isPlayersTurn: boo
                 <ol className='grid grid-cols-4 gap-3 justify-between px-2 h-full items-center animate-[translateFromBottom_0.3s_ease-in-out_1]'>
                     {cards.map((card, index) => (
                         <li key={index}>
-                            <Card
+                            <CardComponent
                                 card={card}
                                 isSelected={cards[index] === selectedCard}
                                 onClick={() => selectCardHandler(index)}
@@ -105,15 +106,15 @@ const Player: React.FC<{ cards: card[], totalPlayers: number, isPlayersTurn: boo
                         <form className='flex flex-col justify-between h-full' onSubmit={(e) => { e.preventDefault(); submitBluffHandler() }}>
                             <div className='flex flex-col gap-2'>
                                 <label className='text-white/40' htmlFor="numberPicker">Card Number</label>
-                                <select defaultValue={bluffedCard.number} onChange={(num) => { setBluffedCard(prev => new card(parseInt(num.target.value) as gameCard, prev.color)) }} id="numberPicker" name="numberPicker">
+                                <select defaultValue={bluffedCard.number} onChange={(num) => { setBluffedCard(prev => createCard(parseInt(num.target.value) as gameCard, prev.color)) }} id="numberPicker" name="numberPicker">
                                     {numbers.filter(num => num > tableCard.number).map(num => <option key={num + 'card'} value={num}>{cardNumberToString(num)}</option>)}
                                 </select>
                                 <label className='text-white/40' htmlFor="typePicker">Type</label>
-                                <select defaultValue={bluffedCard.color} onChange={(type) => { setBluffedCard(prev => new card(prev.number, type.target.value as cardType)) }} id="typePicker" name="typePicker">
+                                <select defaultValue={bluffedCard.color} onChange={(type) => { setBluffedCard(prev => createCard(prev.number, type.target.value as cardType)) }} id="typePicker" name="typePicker">
                                     {types.map(type => <option key={type + 'card'} value={type}>{type}</option>)}
                                 </select>
                                 <p className='text-white/40 self-center'>Preview</p>
-                                <Card className='w-14 self-center' card={bluffedCard} />
+                                <CardComponent className='w-14 self-center' card={bluffedCard} />
                             </div>
 
 

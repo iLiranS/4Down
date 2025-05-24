@@ -1,5 +1,5 @@
 import { PlayerId } from "rune-sdk"
-import { card, deck } from "../utils/cards";
+import { Card } from "../utils/cards";
 
 export type downCount = 0 | 1 | 2 | 3
 
@@ -13,7 +13,7 @@ export interface PlayerType {
     // name: string,
     // img_src: string, // apperantally we can get those two only on client side... 
     down_count: downCount
-    cards: card[], // will be reduced when taking action 
+    cards: Card[], // will be reduced when taking action 
     isAlive: boolean
 }
 // for table
@@ -41,10 +41,10 @@ export type loseAnimation = {
 // the game logic
 export interface GameState {
     players: PlayerType[] // up to 4
-    deckCards: deck
+    deckCards: Card[]
     activePlayerId: string // used as indicator for when player took action
     lastTurnPlayerId: string | undefined
-    cardsHistory: card[]
+    cardsHistory: Card[]
     loseAnimation?: loseAnimation
     // roundTimeLeft: number // later implement round timer
 }

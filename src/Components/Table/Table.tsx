@@ -1,12 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { playerTableInfo, PlayerType } from '../../types/GameTypes'
-import { card } from '../../utils/cards';
+import { Card } from '../../utils/cards';
 import OtherPlayer from './OtherPlayer';
-import Card from '../UI/Card';
+import CardComponent from '../UI/Card';
 import useGameStore from '../../utils/useStore';
 
 // main table - will include the deck card, players, last 5 cards list.
-const Table: React.FC<{ players: PlayerType[], cardHistory: card[], playerId: string | undefined, turn: string }> = ({ players, cardHistory, playerId, turn }) => {
+const Table: React.FC<{ players: PlayerType[], cardHistory: Card[], playerId: string | undefined, turn: string }> = ({ players, cardHistory, playerId, turn }) => {
     const [playersTableInfo, setPlayersTableInfo] = useState<playerTableInfo[]>([]);
     const [playerIndex, setPlayerIndex] = useState(playerId ? players.map(player => player.id).indexOf(playerId) : -1)
     const updateUsers = useGameStore((state) => state.initialize)
@@ -88,8 +88,8 @@ const Table: React.FC<{ players: PlayerType[], cardHistory: card[], playerId: st
         <ol className='tableGrid h-full w-full gap-2'>
             {playersMapped}
             <li style={{ gridArea: 't' }} className='grid place-items-center relative'>
-                <Card key={cardHistory[0].toString() + '-' + cardHistory.length} className='z-10 animate-[scaleIn_0.3s_ease-in-out]' card={cardHistory[0]} />
-                {cardHistory.length > 1 && <Card className='absolute z-[1] left-4 -translate-y-4 opacity-30 scale-90' card={cardHistory[1]} />}
+                <CardComponent key={cardHistory[0].toString() + '-' + cardHistory.length} className='z-10 animate-[scaleIn_0.3s_ease-in-out]' card={cardHistory[0]} />
+                {cardHistory.length > 1 && <CardComponent className='absolute z-[1] left-4 -translate-y-4 opacity-30 scale-90' card={cardHistory[1]} />}
 
             </li>
         </ol>

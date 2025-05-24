@@ -1,12 +1,12 @@
-import type { PlayerId, Players, RuneClient } from "rune-sdk"
-import { gameCard, GameState, playerTableInfo, PlayerType } from "./types/GameTypes"
-import { card, deck } from "./utils/cards"
+import type { PlayerId, RuneClient } from "rune-sdk"
+import { GameState, PlayerType } from "./types/GameTypes"
+import { Card, createCard, createDeck, firstCardOnTable, pullCard } from "./utils/cards"
 import { getSuccessRate, givePlayerCards, shuffleArray } from "./utils/LogicFunctions"
 
 export type Cells = (PlayerId | null)[]
 
 type GameActions = {
-  placeCard: (params: { card: card, fakeCard?: card }) => void,
+  placeCard: (params: { card: Card, fakeCard?: Card }) => void,
   lostRound: (params: { userId: string, msg: string }) => void
   addReady: () => void
 }
@@ -15,17 +15,17 @@ declare global {
   const Rune: RuneClient<GameState, GameActions>
 }
 
-const defaultCard: card = new card(10, 'club') // won't be used just for error handling
+const defaultCard: Card = createCard(10, 'club') // won't be used just for error handling
 
 
 
 
-const initializePlayers = (ids: PlayerId[], startingDeck: deck): PlayerType[] => {
+const initializePlayers = (ids: PlayerId[], startingDeck: Card[]): PlayerType[] => {
   const playersArr: PlayerType[] = [];
   for (let i = 0; i < ids.length; i++) {
-    const cards: card[] = [];
+    const cards: Card[] = [];
     for (let j = 0; j < 4; j++) {
-      const tmpCard = startingDeck.pull();
+      const tmpCard = pullCard(startingDeck);
       cards[j] = tmpCard !== undefined ? tmpCard : defaultCard;
     }
     playersArr[i] = {
@@ -42,14 +42,14 @@ Rune.initLogic({
   minPlayers: 2,
   maxPlayers: 4,
   setup: (allPlayerIds) => {
-    const startingDeck = new deck();
+    const startingDeck = createDeck();
     const allPlayerIdsShuffled = shuffleArray(allPlayerIds)
 
     return {
       players: initializePlayers(allPlayerIdsShuffled, startingDeck),
       deckCards: startingDeck, // will be overriten with new one every round
       activePlayerId: allPlayerIdsShuffled[Math.floor(Math.random() * allPlayerIdsShuffled.length)],
-      cardsHistory: [startingDeck.firstCardOnTable() ?? new card(10, 'club')], // 7 diamond will never happend
+      cardsHistory: [firstCardOnTable(startingDeck) ?? createCard(10, 'club')], // 7 diamond will never happend
       lastTurnPlayerId: undefined
     }
   },
@@ -160,13 +160,13 @@ Rune.initLogic({
         game.activePlayerId = game.loseAnimation?.playerId ?? ''
       }
       // new deck
-      const new_deck = new deck();
+      const new_deck = createDeck();
       for (let i = 0; i < game.players.length; i++) {
         game.players[i].cards = givePlayerCards(new_deck);
       }
 
-      const startingCard = new_deck.firstCardOnTable();
-      game.cardsHistory = [startingCard as card] // reset history
+      const startingCard = firstCardOnTable(new_deck)
+      game.cardsHistory = [startingCard as Card] // reset history
       game.lastTurnPlayerId = undefined;
       game.loseAnimation = undefined
     },

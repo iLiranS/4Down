@@ -1,7 +1,6 @@
 import React from 'react'
 import { createPortal } from 'react-dom';
 import { FaRegCircleXmark } from "react-icons/fa6";
-import { card } from '../../utils/cards';
 interface PopupProps {
     children: React.ReactNode;
     onClose?: () => void;

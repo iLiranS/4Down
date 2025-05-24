@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react"
 
-import selectSoundAudio from "./assets/select.wav"
 import flip_card_audio from './assets/flip_card.wav'
 import Table from "./Components/Table/Table.tsx"
 import Player from "./Components/PlayerDeck/Player.tsx"
 import { GameState, PlayerType } from "./types/GameTypes.ts"
 import TopContainer from "./Components/Timer/TopContainer.tsx"
-import { card } from "./utils/cards.ts"
+import { Card } from "./utils/cards.ts" // Change this line to import the type
 import { generateRandoLostText } from "./utils/LogicFunctions.ts"
 
 const selectSound = new Audio(flip_card_audio)
@@ -39,7 +38,7 @@ function App() {
   }
 
   // can be either real or fake, check on server
-  const placeCardHandler = (card: card, fakeCard?: card) => {
+  const placeCardHandler = (card: Card, fakeCard?: Card) => {
     // check if previous card was Ace and fake - means current lost
     const lastCard = game.cardsHistory[0];
     if (lastCard.number === 14 && lastCard.fake_val) {

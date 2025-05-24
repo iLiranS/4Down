@@ -1,65 +1,37 @@
 import { cardType, gameCard } from "../types/GameTypes";
 
-export class card {
+export interface Card {
     number: gameCard;
     color: cardType;
     fake_val?: gameCard;
-
-
-    constructor(number: gameCard, color: cardType, fake_val?: gameCard) {
-        this.number = number;
-        this.color = color;
-        if (fake_val) {
-            this.fake_val = fake_val
-        }
-    }
-
-
-    toString(): string {
-        return `${this.number} of ${this.color}s`;
-    }
+    toString: () => string;
 }
 
-export class deck {
-    cards: card[];
 
-    constructor() {
-        this.cards = [];
-        const colors: cardType[] = ['diamond', 'heart', 'spade', 'club'];
-        const numbers: gameCard[] = [10, 11, 12, 13, 14];
+export const createCard = (number: gameCard, color: cardType, fake_val?: gameCard): Card => ({
+    number,
+    color,
+    fake_val,
+});
 
-        for (const color of colors) {
-            for (const number of numbers) {
-                this.cards.push(new card(number, color));
-            }
+export const createDeck = (): Card[] => {
+    const cards: Card[] = [];
+    const colors: cardType[] = ['diamond', 'heart', 'spade', 'club'];
+    const numbers: gameCard[] = [10, 11, 12, 13, 14];
+
+    for (const color of colors) {
+        for (const number of numbers) {
+            cards.push(createCard(number, color));
         }
     }
-
-    /**
-     * Pulls a random card from the deck.
-     * @returns {card | undefined} The pulled card, or undefined if the deck is empty.
-     */
-    pull(): card | undefined {
-        if (this.cards.length === 0) return undefined;
-        const idx = Math.floor(Math.random() * this.cards.length);
-        return this.cards.splice(idx, 1)[0];
-    }
-    /**
-     * 
-     * @returns  first card on table - above J seems not fair and less fun.
-     */
-    firstCardOnTable(): card | undefined {
-        let tmpCard = this.pull()
-
-
-        return tmpCard
-    }
-
-    /**
-     * Returns a string representation of the deck
-     * @returns {string} The string representation of all cards in the deck
-     */
-    toString(): string {
-        return this.cards.map(card => card.toString()).join(', ');
-    }
+    return cards;
 }
+
+export const pullCard = (cards: Card[]): Card | undefined => {
+    if (cards.length === 0) return undefined;
+    const idx = Math.floor(Math.random() * cards.length);
+    return cards.splice(idx, 1)[0];
+};
+export const firstCardOnTable = (cards: Card[]) => {
+    return cards.length > 0 ? cards[0] : undefined;
+};
