@@ -34,3 +34,6 @@ export const pullCard = (cards: Card[]): Card | undefined => {
 export const firstCardOnTable = (cards: Card[]) => {
     return cards.length > 0 ? cards[0] : undefined;
 };
+export const cardToString = (card: Card): string => {
+    return `${card.number} of ${card.color}${card.fake_val !== undefined ? ` (fake: ${card.fake_val})` : ''}`;
+};

@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { playerTableInfo, PlayerType } from '../../types/GameTypes'
-import { Card } from '../../utils/cards';
+import { Card, cardToString } from '../../utils/cards';
 import OtherPlayer from './OtherPlayer';
 import CardComponent from '../UI/Card';
 import useGameStore from '../../utils/useStore';
@@ -88,7 +88,7 @@ const Table: React.FC<{ players: PlayerType[], cardHistory: Card[], playerId: st
         <ol className='tableGrid h-full w-full gap-2'>
             {playersMapped}
             <li style={{ gridArea: 't' }} className='grid place-items-center relative'>
-                <CardComponent key={cardHistory[0].toString() + '-' + cardHistory.length} className='z-10 animate-[scaleIn_0.3s_ease-in-out]' card={cardHistory[0]} />
+                <CardComponent key={cardToString(cardHistory[0]) + '-' + cardHistory.length} className='z-10 animate-[scaleIn_0.3s_ease-in-out]' card={cardHistory[0]} />
                 {cardHistory.length > 1 && <CardComponent className='absolute z-[1] left-4 -translate-y-4 opacity-30 scale-90' card={cardHistory[1]} />}
 
             </li>

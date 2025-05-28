@@ -51,35 +51,33 @@ Rune.initLogic({
         c.color === cardToRemove.color
       );
 
+      // should not happen.
       if (cardIndex === -1) {
         console.error("Card not found in player's hand");
         return;
       }
 
-      game.players[playerIndex].cards = [...playerCards].toSpliced(cardIndex, 1);
+      // Replace toSpliced with filter to remove the card
+      game.players[playerIndex].cards = playerCards.filter((_, index) => index !== cardIndex);
 
-      // new player turn - skip while hand is empty is actually not necessery because each player has to get rid of exactly 1 card each turn.
-      let newPlayerIndex = (playerIndex + 1) % game.players.length
-      let loopCount = 0;
-      while (!game.players[newPlayerIndex].isAlive) {
-        newPlayerIndex = (newPlayerIndex + 1) % game.players.length
-        loopCount++;
-        if (loopCount > game.players.length) {
-          throw new Error("No alive players found");
-        }
+      // new player turn
+      const alivePlayers = game.players.filter(player => player.isAlive);
+      if (alivePlayers.length <= 1) {
+        // Game should be over if only 1 or 0 players are alive
+        Rune.gameOver();
+        return;
       }
 
-      let new_player_id = game.players[newPlayerIndex].id
-      game.lastTurnPlayerId = game.activePlayerId
-      game.activePlayerId = new_player_id
+      const currentPlayerPosition = alivePlayers.findIndex(player => player.id === game.activePlayerId);
+      const nextPlayer = alivePlayers[(currentPlayerPosition + 1) % alivePlayers.length];
 
+      game.lastTurnPlayerId = game.activePlayerId;
+      game.activePlayerId = nextPlayer.id;
     },
     lostRound(params, { game }) {
       const { userId, msg } = params
       const id_map = game.players.map(player => player.id);
       const playerIndex = id_map.indexOf(userId)
-      const player = game.players[playerIndex]
-      console.log("player with id : " + player.id + " has lost the round")
       const new_down_count = game.players[playerIndex].down_count + 1;
       game.players[playerIndex].down_count += 1;
 

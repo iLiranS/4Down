@@ -54,8 +54,6 @@ const Player: React.FC<{ cards: Card[], totalPlayers: number, isPlayersTurn: boo
             if (!selectedCard) return
             const final_bluff_card: Card = createCard(bluffedCard.number, bluffedCard.color, bluffedCard.number);
             setBluffPopup(false);
-            console.log("real card was : " + selectedCard.toString())
-            console.log("fake card was : " + final_bluff_card.toString())
             onPlaceCard(selectedCard, final_bluff_card)
             setSelectedCard(undefined)
             setCanPlay(false)
