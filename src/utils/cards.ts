@@ -4,7 +4,6 @@ export interface Card {
     number: gameCard;
     color: cardType;
     fake_val?: gameCard;
-    toString: () => string;
 }
 
 

@@ -10,10 +10,8 @@ export type cardType = 'diamond' | 'heart' | 'spade' | 'club';
 
 export interface PlayerType {
     id: PlayerId,
-    // name: string,
-    // img_src: string, // apperantally we can get those two only on client side... 
     down_count: downCount
-    cards: Card[], // will be reduced when taking action 
+    cards: Card[],
     isAlive: boolean
 }
 // for table

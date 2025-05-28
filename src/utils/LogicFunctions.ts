@@ -1,5 +1,24 @@
-import { gameCard } from "../types/GameTypes";
+import { PlayerId } from "rune-sdk";
+import { gameCard, PlayerType } from "../types/GameTypes";
 import { Card, createCard, pullCard } from "./cards";
+
+export const initializePlayers = (ids: PlayerId[], startingDeck: Card[]): PlayerType[] => {
+    const playersArr: PlayerType[] = [];
+    for (let i = 0; i < ids.length; i++) {
+        const cards: Card[] = [];
+        for (let j = 0; j < 4; j++) {
+            const tmpCard = pullCard(startingDeck);
+            cards[j] = tmpCard !== undefined ? tmpCard : createCard(10, 'club');
+        }
+        playersArr[i] = {
+            id: ids[i],
+            down_count: 0,
+            isAlive: true,
+            cards
+        };
+    }
+    return playersArr;
+};
 
 export const shuffleArray = <T>(array: T[]): T[] => {
     const arr = [...array];

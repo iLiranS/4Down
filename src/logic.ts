@@ -1,7 +1,7 @@
 import type { PlayerId, RuneClient } from "rune-sdk"
 import { GameState, PlayerType } from "./types/GameTypes"
 import { Card, createCard, createDeck, firstCardOnTable, pullCard } from "./utils/cards"
-import { getSuccessRate, givePlayerCards, shuffleArray } from "./utils/LogicFunctions"
+import { getSuccessRate, givePlayerCards, initializePlayers, shuffleArray } from "./utils/LogicFunctions"
 
 export type Cells = (PlayerId | null)[]
 
@@ -14,29 +14,6 @@ type GameActions = {
 declare global {
   const Rune: RuneClient<GameState, GameActions>
 }
-
-const defaultCard: Card = createCard(10, 'club') // won't be used just for error handling
-
-
-
-
-const initializePlayers = (ids: PlayerId[], startingDeck: Card[]): PlayerType[] => {
-  const playersArr: PlayerType[] = [];
-  for (let i = 0; i < ids.length; i++) {
-    const cards: Card[] = [];
-    for (let j = 0; j < 4; j++) {
-      const tmpCard = pullCard(startingDeck);
-      cards[j] = tmpCard !== undefined ? tmpCard : defaultCard;
-    }
-    playersArr[i] = {
-      id: ids[i],
-      down_count: 0,
-      isAlive: true,
-      cards
-    };
-  }
-  return playersArr;
-};
 
 Rune.initLogic({
   minPlayers: 2,
@@ -119,7 +96,7 @@ Rune.initLogic({
 
     },
     addReady(params, { game }) {
-      // this wil be called from each client after lost animation is finished.
+      // this will be called from each client after lost animation is finished.
       if (!game.loseAnimation) return;
       const new_r_count = game.loseAnimation.readyCount + 1;
       if (new_r_count < game.players.length - 1) {
